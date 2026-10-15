@@ -1,0 +1,363 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>יועץ טמבור בוואטסאפ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap">
+<style>
+/* Tambour WhatsApp-style advisor prototype. A chat that answers from Tambour's real product data. Single committed light look. */
+:root{
+  --bg:#FFFFFF; --ink:#333032; --muted:#5C595B; --line:#E5E5E5; --grid:#ECEAEA;
+  --red:#DB0032; --red-d:#B8002A; --red-tint:#FBE5EA;
+  --chat-bg:#EFE9E1; --out:#DCF3D6; --in:#FFFFFF; --bar:#1F2C34; --bar2:#2A3942; --tick:#4FA3E0;
+  --font:'Heebo','Arial Hebrew',Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.5;direction:rtl}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.top{background:var(--ink);color:#fff;font-size:12px;padding-inline:20px}
+.top .in{max-width:1200px;margin-inline:auto;display:flex;justify-content:space-between;padding-block:8px}
+.nav{background:var(--bg);border-bottom:1px solid var(--line);padding-inline:20px}
+.nav .in{max-width:1200px;margin-inline:auto;display:flex;align-items:center;gap:12px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:6px;color:var(--red);font-weight:900;font-size:24px;letter-spacing:-.02em}
+.logo i{width:18px;height:18px;background:var(--red);display:inline-block;clip-path:polygon(0 0,100% 0,100% 100%,40% 100%,40% 60%,0 60%)}
+main{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:126px 126px;padding:48px 16px 80px}
+.wrap{max-width:1100px;margin-inline:auto;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:56px;align-items:center}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:28px}.intro{order:2}}
+.intro{background:var(--bg);padding:32px;border:1px solid var(--line)}
+.kicker{font-size:13px;font-weight:800;color:var(--red);letter-spacing:.04em;margin:0 0 8px}
+.intro h1{margin:0 0 12px;font-size:38px;font-weight:900;line-height:1.12;letter-spacing:-.01em;text-wrap:balance}
+.intro p{margin:0 0 18px;color:var(--muted);font-size:17px;line-height:1.6}
+.feats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.feats li{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;font-size:15px}
+.feats li span{width:36px;height:36px;border-radius:50%;background:var(--red-tint);display:grid;place-items:center}
+.feats svg{width:18px;height:18px;stroke:var(--red);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.feats b{display:block;font-size:16px}
+.feats small{color:var(--muted);font-size:14px}
+.note{margin-top:18px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;line-height:1.55}
+.mode{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;background:#F1F1F1;border-radius:999px;padding:4px 12px;margin-top:12px}
+.mode i{width:8px;height:8px;border-radius:50%;background:#9A9A9A}
+.mode.on i{background:#2FA84F}
+/* phone */
+.phone{width:100%;max-width:400px;margin-inline:auto;border-radius:44px;background:#111;padding:12px;box-shadow:0 30px 60px rgba(0,0,0,.22)}
+.screen{border-radius:34px;overflow:hidden;display:flex;flex-direction:column;height:760px;max-height:calc(100vh - 40px);min-height:560px;background:var(--chat-bg)}
+.bar{background:var(--bar);color:#fff;display:flex;align-items:center;gap:10px;padding:14px 14px 12px;flex:none}
+.bar .av{width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none}
+.bar .av i{width:18px;height:18px;background:var(--red);clip-path:polygon(0 0,100% 0,100% 100%,40% 100%,40% 60%,0 60%)}
+.bar b{display:flex;align-items:center;gap:6px;font-size:16px}
+.bar b svg{width:15px;height:15px}
+.bar small{display:block;font-size:12px;color:#B7C1C6}
+.bar .ic{margin-inline-start:auto;display:flex;gap:16px}
+.bar .ic svg{width:20px;height:20px;stroke:#D7DEE1;fill:none;stroke-width:1.8}
+.chat{flex:1;overflow-y:auto;padding:14px 10px 8px;display:flex;flex-direction:column;gap:6px;background-color:var(--chat-bg);background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:14px 14px}
+.chat>*{flex:none}
+.day{align-self:center;background:#fff;color:var(--muted);font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;margin:4px 0 8px;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.msg{max-width:84%;padding:7px 10px 18px;border-radius:10px;position:relative;font-size:15px;line-height:1.45;box-shadow:0 1px 1px rgba(0,0,0,.1);white-space:pre-wrap;word-wrap:break-word}
+.msg.in{background:var(--in);align-self:flex-start;border-top-right-radius:2px}
+.msg.out{background:var(--out);align-self:flex-end;border-top-left-radius:2px}
+.msg time{position:absolute;bottom:3px;left:8px;font-size:11px;color:#7B8A92;display:flex;align-items:center;gap:3px}
+.msg.out time svg{width:16px;height:11px;stroke:var(--tick);fill:none;stroke-width:1.6}
+.msg b{font-weight:800}
+.card{background:#fff;border-radius:10px;align-self:flex-start;max-width:84%;width:84%;overflow:hidden;box-shadow:0 1px 1px rgba(0,0,0,.1)}
+.card .hd{display:flex;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid #EEE}
+.card .hd span{width:36px;height:36px;border-radius:8px;background:var(--red);display:grid;place-items:center;flex:none}
+.card .hd span svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.8}
+.card .hd b{font-size:15px;font-weight:800;line-height:1.25}
+.card .hd small{display:block;font-size:12px;color:var(--muted)}
+.card dl{margin:0;padding:8px 12px;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px}
+.card dt{color:var(--muted);font-weight:700}
+.card dd{margin:0}
+.card a{display:block;text-align:center;padding:9px;border-top:1px solid #EEE;color:#1C8CB8;font-weight:700;font-size:14px;text-decoration:none}
+.qr{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:92%;margin:2px 0 4px}
+.qr button{border:0;background:#fff;color:#1C8CB8;font-weight:700;font-size:14px;padding:8px 12px;border-radius:18px;cursor:pointer;box-shadow:0 1px 1px rgba(0,0,0,.1)}
+.qr button:hover{background:#F4FAFD}
+.qr button[disabled]{opacity:.45;cursor:default}
+.typing{align-self:flex-start;background:#fff;border-radius:10px;padding:10px 14px;display:flex;gap:4px;box-shadow:0 1px 1px rgba(0,0,0,.1)}
+.typing i{width:7px;height:7px;border-radius:50%;background:#9AA5AA;animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.typing i{animation:none}}
+.compose{display:flex;gap:8px;align-items:center;padding:8px 8px 12px;background:var(--chat-bg);flex:none}
+.compose input{flex:1;min-width:0;border:0;border-radius:24px;padding:12px 16px;font-size:15px;background:#fff;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.compose input:focus{outline:2px solid #9CC9DA}
+.compose button{width:46px;height:46px;border-radius:50%;border:0;background:#1F8A70;display:grid;place-items:center;cursor:pointer;flex:none}
+.compose button svg{width:20px;height:20px;fill:#fff}
+.compose button[disabled]{opacity:.5}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+
+<div class="top"><div class="in"><span>פתרונות לתעשייה</span><span>אזור אישי · צור קשר</span></div></div>
+<header class="nav"><div class="in"><span class="logo"><i></i>טמבור</span></div></header>
+<main><div class="wrap">
+  <section class="intro" aria-labelledby="h">
+    <p class="kicker">פרוטוטייפ · שירות ומכירה</p>
+    <h1 id="h">יועץ טמבור, בתוך הוואטסאפ.</h1>
+    <p>שואלים כמו שהייתם שואלים צבע מנוסה, ומקבלים תשובה מקצועית מתוך הנתונים של טמבור: איזה מוצר, כמה לקנות, איך מיישמים ומה זמני הייבוש.</p>
+    <ul class="feats">
+      <li><span><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg></span><div><b>מבוסס על הקטלוג</b><small>כ-80 מוצרים עם כושר כיסוי, אריזות, דילול וייבוש מדפי המוצר</small></div></li>
+      <li><span><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2"/></svg></span><div><b>מחשב כמויות</b><small>אותו מנוע של מחשבון הכמויות, כולל האריזות המשתלמות</small></div></li>
+      <li><span><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><div><b>יודע מתי להעביר לנציג</b><small>שאלה שאין לה תשובה בנתונים עוברת לשירות הלקוחות</small></div></li>
+    </ul>
+    <span class="mode" id="mode"><i></i><span id="modeTxt">מצב הדגמה: תשובות מוכנות</span></span>
+    <p class="note">הדמיה של שיחה בוואטסאפ, להמחשה בלבד. בגרסה המלאה היועץ מחובר ל-WhatsApp Business של טמבור. התשובות מבוססות על דפי המוצר באתר, ואינן מחליפות את הדף הטכני.</p>
+  </section>
+
+  <div class="phone" aria-label="הדמיית צ'אט">
+    <div class="screen">
+      <div class="bar">
+        <span class="av" aria-hidden="true"><i></i></span>
+        <div><b>יועץ טמבור <svg viewBox="0 0 24 24" aria-label="חשבון מאומת"><circle cx="12" cy="12" r="10" fill="#25B865"/><path d="M7.5 12.5l3 3 6-6" stroke="#fff" stroke-width="2" fill="none"/></svg></b><small id="status">מקוון</small></div>
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 10l5-3v10l-5-3z"/><rect x="3" y="6" width="12" height="12" rx="2"/></svg><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></span>
+      </div>
+      <div class="chat" id="chat" role="log" aria-live="polite"></div>
+      <form class="compose" id="form" autocomplete="off">
+        <label class="sr" for="inp">הודעה ליועץ</label>
+        <input id="inp" placeholder="כתבו שאלה, למשל: מה מתאים למטבח?" maxlength="400">
+        <button type="submit" id="send" aria-label="שליחה"><svg viewBox="0 0 24 24"><path d="M21 20L3 12l18-8v6L9 12l12 2z"/></svg></button>
+      </form>
+    </div>
+  </div>
+</div></main>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+// ---------- Shades (real Tambour fan) ----------
+var SH="WOW501P|Fine Linen|f5efe2;W0001P|Love in White|f2ece1;W0013P|Cotton Touch|efebe1;W0006P|Summer White|efe8d9;WOW251P|Light Approach|f3e4d0;WOW527P|Perfect Day|e8e1db;W0022P|Patience|e4dfd4;WOW508P|ICE CAFE|e4d3bb;WOW221P|Hush White|f0ece1;R0071P|Delicate Lace|ede3df;R0044P|Romantic Night|efd3d6;R0052P|Wild Flower|f1bfc1;R0142P|Abby Rose|d4b8bc;R0135P|Beautiful Pink|d0b6bc;R0239P|Savanna|c5b6b7;R0081T|Rose Dawn|cf9dad;R0033T|Dahlia Delight|d28ca8;R0234T|MUSEE D'ORSAY|a49499;R0193T|Abigail Pink|9f858a;R0131T/A|DIXIE ROSE|a17787;R0063A|Lady in Red|c5515f;R0105A|Rickshaw Red|ac4c5b;R0161A|Hot Terracotta|92484d;R0252A|Bitter Chocolate|564546;O0316P|Ray of Light|f0e8e0;O0351P|Pretty Parasol|e7dad2;O0290P|Sandpaper|fbc3ae;O0463P|Ballet Cream|d2c4bb;O0313T/A|CHEERY TUNE|fcad79;O0443P|Cream Tulip|c8b2a8;O0499T|White Rhino|b8aaa2;O0430T|Moon Dust|b99f97;O0371A|Gold Medal|d68b46;O0383T/A|STARDUST PEACH|bd8371;O0473T|Yum Yum|94837f;O0329A|Baccarat|d15945;O0455A|Charlie Brown|8f5e44;O0483A|African Mud|614b45;Y0540P|Meditation|f3eddf;Y0778P|Sweet Spring|dde5d3;Y0597P|Ocean Salt|e6d4bd;Y0584P|Butterscotch Glaze|ecc9a8;Y0660P|Parmesan Sauce|d2c6b2;Y0736P|ARTIST'S CANVAS|c7bdb5;Y0560A|Crazy Daisy|f5b924;Y0525A|Basket of Gold|fb9d3a;Y0703T|Bright Idea|b4a895;Y0718T|Dune Grass|a29d88;Y0691A|GOLD ESTATE|a18c73;Y0651A|Bag 'O Gold|a18249;Y0727A|Lucky Four Leaf|7a7a5d;Y0770A|Olive Stone|5d5744;G0813P|Diomede|e3ebe4;G0848P|Daiquiri Cream|d6e2d8;G0815P|Surf's Surprise|acded5;G0877P|Fortune’s Prize|bec5b2;G1016P|Slate Tint|afbfbf;G0892T|Her Duchess|9fb7a4;G0810T|Happy Tone|6ec2ac;G0859T/A|KEY WEST|6cae9d;G0956T/A|BLEU VERTE|7d9791;G0833A|Just About Green|79944b;G0840A|Green Mumba|638d52;G0889A|DRAGON'S HIDE|5e7c50;G0861A|Barbados Bay|10846e;G1022A|Cape Cliffs|3f5252;B1030P|Captivate|d9e5e4;B1100P|Whimsical White|d1dbe0;B1053P|Mamello|b6d1e2;B1095P|Shallot Peel|a5c5d4;B1061P/T|PERIWINKLE PALACE|9ebcdc;B1234T|Blue Shoal|9fabb1;B1172T|Engaging|8ca5a9;B1138T|Bashful Blue|799fad;B1236T/A|BOTTLENOSE DOLPHIN|7b8890;B1098A|DREW|4b8fac;B1265A|SHINING ARMOR|6c717c;B1064A|Greek Island|2573ac;B1141A|Atlantic Storm|2f6d83;B1134A|Atlantic Ocean|276d7e;B1106A|Atlantic Beach|236e98;B1267A|Black Beard|454c57;P1513P|JAMAICA|eaeae4;P1290P|Violet Dew|e0d4e0;P1312P|Love Andi|e8c0d3;P1319P|Fragrant Amelia|bcbbd1;P1271P|Scottish Thistle|afb4d8;P1410T|Abra Cadabra|bc9ead;P1438T|Dove’s Delight|a49ba9;P1466T|Revenge|93949f;P1301A|FROSTED PLUM|a273a5;P1357A|FAIRY LAND|9a6d8e;P1399A|GRAPE'S TREASURE|7e6480;P1358A|Cloud Terrace|834e76;P1400A|Victorian Lace|6d4f6e;P1498A|Purple Dusk|4f454f;N1548P|Secret White|efeae0;N1556P|Eco Life|dcd1c2;N1515P|Behind the Clouds|c5c8cb;N1605P|Tender Grey|bbb5b1;N1585T|Another Way|a6a299;N1565T|Chateau|968b82;N1608A|ON MY OWN|7e7979;N1560A|SETTLE DOWN|73685b;N1526A|Bagira Panther|40403f".split(';').map(function(s){var p=s.split('|');return {f:p[0][0],c:p[0].slice(1),n:p[1],h:'#'+p[2]}});
+function baseOf(code){return /P$/.test(code)?'pastel':'deep'}
+// ---------- Products (from tambour.co.il product pages) ----------
+// u: 'm2L' coverage m²/L per coat · 'kgm2' consumption kg/m² for the system · 'Lm2' L/m² per coat · 'kgmm' kg/m² per mm · 'fix' fixed dosage
+var P={
+ sc2000:{n:'סופרקריל 2000',s:'סופרקריל-2000',u:'m2L',c:[13,14],deep:[10,11],pk:[1,3,5,10,15,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 7 ימים',dil:'שכבה ראשונה: 15%-20% מים · בהתזה: עד 30%',t:'ברק מעודן, רחיץ ועמיד בקרצוף כבד',tint:1},
+ scmat:{n:'סופרקריל מט+',s:'סופרקריל-מט',u:'m2L',c:[15,16],deep:[12,13],pk:[1,3,5,10,15,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · לרחיצת הקיר: 7 ימים',dil:'שכבה ראשונה: 15%-20% מים · בהתזה: עד 30%',t:'גימור מט חלק ואחיד',tint:1},
+ scsilk:{n:'סופרקריל משי',s:'סופרקריל-משי',u:'m2L',c:[13,14],pk:[1,5,15,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · לרחיצת הקיר: 7 ימים',dil:'שכבה ראשונה: 15%-20% · נוספות: 10%-15% · בהתזה: עד 30%',t:'גימור משי, מתנקה בקלות',tint:1,pastelOnly:1},
+ sceco:{n:'סופרקריל ECO',s:'סופרקריל-אקו',u:'m2L',c:[15,16],pk:[1,5,15,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 7 ימים',dil:'שכבה ראשונה: 15%-20% · נוספות: 10%-15% · בהתזה: עד 30%',t:'ללא VOC, תקן LEED',tint:1,pastelOnly:1},
+ acrinol:{n:'סופרקריל אקרינול',s:'סופרקריל-אקרינול',u:'m2L',c:[13,14],pk:[1,3,5],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · לניקוי הקיר: 7 ימים',dil:'שכבה ראשונה: 15%-20% מים · בהתזה: עד 30%',t:'מט, מתאים במיוחד לחדרים רטובים',tint:1},
+ ww:{n:'סופרקריל 2000 לבן לבן WW',s:'סופרקריל-2000-לבן-לבן-ww',u:'m2L',c:[13,14],pk:[1,2,5,15,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 7 ימים',dil:'שכבה ראשונה: 15%-20% · נוספות: 10%-15% · בהתזה: 30%',t:'קולקציית לבנים ייחודית',tint:1},
+ plastikir:{n:'פלסטיקיר',s:'פלסטיקיר',u:'m2L',c:[9,10],pk:[5,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 72 שעות',dil:'שכבה ראשונה: 15%-20% · נוספות: 10%-15%',t:'צבע פלסטי מקצועי לפנים'},
+ magic:{n:"מג'יקריל +",s:'מגיקריל',u:'m2L',c:[10,11],pk:[5,15],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 24 שעות',dil:'שכבה ראשונה: 15%-20% · נוספות: 10%-15% · בהתזה: עד 30%',t:'לבן, לבנייה קבלנית',white:1},
+ multi:{n:'מולטיקריל לבן / פסטל P',s:'מולטיקריל-לבן-בסיס-פסטל-p',u:'m2L',c:[10,11],pk:[16],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 24 שעות',dil:'שכבה ראשונה: 15%-20% · בהתזה: עד 30%',t:'לבן, לבנייה קבלנית',white:1},
+ polysid:{n:'פוליסיד',s:'פוליסיד',u:'m2L',c:[8,9],pk:[5,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 24 שעות',dil:'שכבה ראשונה: 15%-20% · נוספות: 10%-15%',t:'סיד סינתטי לקירות ותקרות',white:1},
+ sid:{n:'גמר סיד סופר',s:'גמר-סיד-סופר',u:'m2L',c:[8,9],pk:[16,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 24 שעות',dil:'שכבה ראשונה: 15%-20% · באיירלס: עד 30%',t:'סיד מקצועי, ת"י 1637',white:1},
+ txBeton:{n:'TEXTURE בטון',s:'texture-בטון',u:'m2L',c:[3,4],pk:[3],h:2,sys:1,dry:'למגע: שעתיים · ייבוש סופי: 24 שעות',t:'צבע דקורטיבי במראה בטון'},
+ txSuede:{n:'TEXTURE זמש',s:'texture-זמש',u:'m2L',c:[3,4],pk:[3],h:2,sys:1,dry:'למגע: שעתיים · ייבוש סופי: 24 שעות',t:'צבע דקורטיבי במראה זמש'},
+ txLinen:{n:'TEXTURE פשתן',s:'texture-פשתן',u:'m2L',c:[3,4],pk:[3],h:2,sys:1,dry:'למגע: כשעה · בין שכבות: כשעתיים · ייבוש סופי: 24 שעות',t:'צבע דקורטיבי במראה פשתן'},
+ txJeans:{n:"TEXTURE ג'ינס",s:'texture-גינס',u:'m2L',c:[3,3],pk:[3],h:2,sys:1,dry:'למגע: שעתיים · ייבוש סופי: 24 שעות',t:"צבע דקורטיבי במראה ג'ינס"},
+ txSilk:{n:'TEXTURE משי פראי',s:'texture-משי-פראי',u:'m2L',c:[6,7],pk:[3],h:2,sys:1,dry:'למגע: שעתיים · ייבוש סופי: 24 שעות',t:'צבע דקורטיבי במראה משי פראי'},
+ txGlit:{n:'TEXTURE גליטר',s:'texture-גליטר',u:'m2L',c:[2,3],pk:[3],h:2,sys:1,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 24 שעות',t:'מראה מנצנץ, בשלוש שכבות'},
+ bondrol:{n:'בונדרול סופר',s:'בונדרול-סופר',u:'m2L',c:[6,7],pk:[1,5,16],h:2,dry:'למגע: שעה · לשכבה עליונה: שעתיים',t:'יסוד מקשר, גוון צהבהב לזיהוי'},
+ bondrolx:{n:'בונדרול X',s:'בונדרול-x',u:'m2L',c:[6,7],pk:[16],h:2,dry:'למגע: שעה · לשכבה עליונה: שעתיים',t:'יסוד מקשר לסיד, שפכטל ותיקונים'},
+ tamfil:{n:'טמבורפיל לבן',s:'טמבורפיל-לבן',u:'m2L',c:[6,7],pk:[16],h:2,dry:'למגע: שעה · לשכבת הצבע: שעתיים',dil:'רולר/מברשת: 15%-20% מים · איירלס: 20%-30%',t:'יסוד למילוי והחלקת טיח חדש'},
+ yad:{n:'יד ראשונה',s:'יד-ראשונה',u:'m2L',c:[6,7],pk:[18],h:2,dry:'למגע: שעה · לשכבת הצבע: שעתיים',dil:'רולר/מברשת: 15%-20% מים · איירלס: 20%-30%',t:'יסוד לסיד בבנייה חדשה'},
+ primerW:{n:'פריימר לתשתיות W',s:'פריימר-לתשתיות-w',u:'m2L',c:[6,8],pk:[5,18],h:3,dry:'למגע: שעה · לשכבה עליונה: 2-4 שעות',t:'יסוד מחוספס לטיח, גבס ובטון, פנים וחוץ'},
+ magicbond:{n:'מגיק בונד +',s:'מגיק-בונד',u:'kgm2',c:[2,2],pk:[4.5,25],h:4,dry:'למגע: שעתיים · בין שכבות: 4 שעות · ייבוש קשה: 24 שעות',t:'שפכטל אמריקאי למילוי והחלקה'},
+ fungi:{n:'תמיסה פונגיציק',s:'תמיסה-פונגיציק-שקוף-בקבוק',u:'fix',fixq:'100 מ"ל',pkTxt:'בקבוק 100 מ"ל',h:0.5,dry:'ייבוש למגע ולצביעה: 30 דקות',dil:'100 מ"ל תמיסה ל-5 ליטר מים',t:'חיטוי עובש ופטריות לפני צביעה'},
+ md:{n:'סופרקריל מ.ד',s:'סופרקריל-מ-ד',u:'m2L',c:[11,12],pk:[1,5,18],h:2.5,rough:1,dry:'למגע: שעה · בין שכבות: 2-3 שעות · ייבוש סופי: 72 שעות',dil:'שכבה ראשונה: 15%-20% · נוספות: 10%-15% · איירלס: כ-30%',t:'אקרילי טהור, עמידות UV גבוהה',tint:1,pastelOnly:1},
+ md45:{n:'מ.ד 45 לבן / פסטל P',s:'מ-ד-45-לבן-בסיס-פסטל-p',u:'m2L',c:[9,10],pk:[18],h:3,rough:1,dry:'למגע: שעה · בין שכבות: 3 שעות · ייבוש סופי: 72 שעות',dil:'שכבה ראשונה: 15%-20% · נוספות: 10%-15% · איירלס: 30%',t:'אקרילי עמיד לקירות חוץ',tint:1,pastelOnly:1},
+ puExt:{n:'צבע פוליאוריתני לקירות חוץ',s:'צבע-פוליאוריתני-לקירות-חוץ-לבן-פסטל-p',u:'m2L',c:[7,8],pk:[18],h:3,rough:1,dry:'למגע: שעה · בין שכבות: 3 שעות · ייבוש סופי: 72 שעות',dil:'מים',t:'מרקם קטיפתי לחוץ',tint:1,pastelOnly:1},
+ rg10:{n:'רב-גמיש 10',s:'רב-גמיש-10',u:'kgm2',c:[0.7,1],pk:[2,20],h:24,dry:'למגע: 4 שעות · בין שכבות: 24 שעות · ייבוש סופי: 72 שעות',dil:'עד 5% מים במידת הצורך',t:'ציפוי גמיש חלק, סדקים עד 2 מ"מ'},
+ rg20:{n:'רב-גמיש 20',s:'רב-גמיש-20',u:'kgm2',c:[2,2.5],pk:[20],h:24,dry:'למגע: 4 שעות · בין שכבות: 24 שעות · ייבוש סופי: 21 יום',dil:'עד 5% מים במידת הצורך',t:'ציפוי גמיש, סדקים עד 2 מ"מ, מונע ראדון'},
+ rg90:{n:'רב-גמיש 90',s:'רב-גמיש-90',u:'kgm2',c:[2.2,2.7],pk:[20],h:24,dry:'למגע: 4 שעות · בין שכבות: 24 שעות · ייבוש סופי: 72 שעות',dil:'עד 5% מים במידת הצורך',t:'ציפוי גמיש, סדקים עד 2 מ"מ'},
+ tm40:{n:'שליכט טמבור TM 40',s:'שליכט-טמבור-tm-40',u:'kgm2',c:[3.5,4],pk:[],h:3,dry:'לעיבוד: עד חצי שעה · למגע: 2-3 שעות · ייבוש סופי: 21 יום',t:'מרקם עדין, מגשר על סדקים עד 2 מ"מ',tint:1},
+ tm50:{n:'שליכט טמבור TM 50',s:'שליכט-טמבור-tm-50',u:'kgm2',c:[3.5,4],pk:[],h:3,dry:'לעיבוד: עד חצי שעה · למגע: 2-3 שעות · ייבוש סופי: 21 יום',t:'מרקם בינוני',tint:1},
+ tm70:{n:'שליכט טמבור TM 70',s:'שליכט-טמבור-tm-70',u:'kgm2',c:[4,4.5],pk:[],h:3,dry:'לעיבוד: עד חצי שעה · למגע: 2-3 שעות · ייבוש סופי: 21 יום',t:'מרקם בינוני-גס',tint:1},
+ tr30:{n:'שליכט טמבור טרנו 30',s:'שליכט-טמבור-טרנו-30',u:'kgm2',c:[3,3.5],pk:[],h:3,dry:'לעיבוד: עד חצי שעה · למגע: 2-3 שעות · ייבוש סופי: 21 יום',t:'מראה מינרלי, מרקם עדין',tint:1},
+ tr50:{n:'שליכט טמבור טרנו 50',s:'שליכט-טמבור-טרנו-50',u:'kgm2',c:[3.5,4],pk:[],h:3,dry:'לעיבוד: עד חצי שעה · למגע: 2-3 שעות · ייבוש סופי: 21 יום',t:'מראה מינרלי, מרקם בינוני',tint:1},
+ tr90:{n:'שליכט טמבור טרנו 90',s:'שליכט-טמבור-טרנו-90',u:'kgm2',c:[4,4.5],pk:[],h:3,dry:'לעיבוד: עד חצי שעה · למגע: 2-3 שעות · ייבוש סופי: 21 יום',t:'מראה מינרלי, מרקם גס',tint:1},
+ arava:{n:'טיח ערבה',s:'טיח-ערבה',u:'kgmm',c:[1.5,1.5],pk:[25],h:24,dry:'לפי הדף הטכני',t:'טיח מינרלי במראה בטון ואבן'},
+ kosher:{n:'יסוד קושר T',s:'יסוד-קושר-לרב-גמיש',u:'m2L',c:[6,8],pk:[5,18],h:4,dry:'למגע: שעה · בין שכבות: 4 שעות · ייבוש סופי: 24 שעות',dil:'טרפנטין מינרלי טמבור עד 30%',t:'יסוד לתשתית צבועה או חלשה, ולרב גמיש'},
+ ysShl:{n:'יסוד לשליכט אקרילי',s:'יסוד-לשליכט-אקרילי',u:'m2L',c:[6,8],pk:[5,18],h:5,dry:'למגע: 1-2 שעות · לפני יישום השליכט: 4-6 שעות',dil:'מים עד 25%',t:'יסוד מקשר לשליכט אקרילי גמיש'},
+ tflex:{n:'T-FLEX 460',s:'t-flex-460',u:'kgm2',c:[1.6,1.6],pk:[22],h:48,dry:'24-72 שעות לפי מזג האוויר',dil:'מוכן לשימוש',t:'דבק גמיש לחיזוק תשתית, עם רשת אינטרגלס'},
+ hamSm:{n:'המרטון חלק משי',s:'המרטון-חלק-משי',u:'m2L',c:[8,10],pk:[0.75,4.5],h:1.5,dry:'למגע: 30 דקות · בין שכבות: 1-2 שעות · ייבוש קשה: 24 שעות',dil:'מדלל 1-04 או מדלל המרטון, 5%-30%',t:'ישירות על מתכת וחלודה יציבה, ללא יסוד'},
+ hamHm:{n:'המרטון רקוע משי',s:'המרטון-רקוע-משי',u:'m2L',c:[8,10],pk:[0.75,4.5],h:1.5,dry:'למגע: 30 דקות · בין שכבות: 1-2 שעות · ייבוש קשה: 24 שעות',dil:'אקדח אוויר: מדלל 1-04 עד 5%',t:'מראה רקוע, ישירות על מתכת'},
+ hamGr:{n:'המרטון מגורען מט',s:'המרטון-מגורען-מט',u:'m2L',c:[8,10],pk:[0.75,4.5],h:1.5,dry:'למגע: 30 דקות · בין שכבות: 1-2 שעות · ייבוש קשה: 24 שעות',dil:'מדלל 1-04 או מדלל המרטון עד 5%',t:'מראה מגורען מט, ישירות על מתכת'},
+ hamMt:{n:'המרטון בסיס מטאלי מנצנץ',s:'המרטון-בסיס-מטאלי-מנצנץ',u:'m2L',c:[8,10],pk:[0.75,4.5],h:1.5,dry:'למגע: 30 דקות · בין שכבות: 1-2 שעות · ייבוש קשה: 24 שעות',dil:'אקדח אוויר: מדלל 1-04 עד 5%',t:'מראה מטאלי מנצנץ'},
+ one:{n:'צביעה אחת ודי חלק',s:'צביעה-אחת-ודי-חלק',u:'m2L',c:[6,10],pk:[0.75,4.5,18],h:0.25,dry:'למגע: 15 דקות · בין שכבות: 15 דקות לפחות · לאחיזה: 12 שעות',dil:'מברשת/רולר: מדלל 18 עד 10%',t:'סינתטי מהיר, יסוד ועליון'},
+ galva:{n:'גלווקוט לבן',s:'גלווקוט-לבן',u:'m2L',c:[5.4,12.7],pk:[0.75,5,18],h:2,dry:'למגע: שעה · בין שכבות: שעתיים · ייבוש סופי: 18 שעות',dil:'מדלל 1-32 עד 10%',t:'יסוד ועליון למתכת מגולוונת'},
+ antirust:{n:'אנטירוסט',s:'אנטירוסט',u:'m2L',c:[9,12.8],pk:[0.75,4.5,18],h:16,dry:'למגע: שעתיים · בין שכבות: 16 שעות לפחות',dil:'מברשת/רולר: טרפנטין מינרלי 0-5%',t:'יסוד נגד חלודה לפלדה וברזל'},
+ ysWater:{n:'יסוד רב שימושי ע"ב מים',s:'יסוד-רב-שימושי-עב-מים',u:'m2L',c:[12,12],pk:[0.75,2.5],h:24,dry:'למגע: שעה · ייבוש סופי: 24 שעות',dil:'מברשת/רולר: 5%-10% מים',t:'יסוד למתכת, פורמייקה, פלסטיק ועץ'},
+ ysSolv:{n:'יסוד רב שימושי ע"ב ממס',s:'יסוד-רב-שימושי-עב-ממס',u:'m2L',c:[10,10],pk:[0.25,0.75,4.5],h:24,dry:'למגע: שעה · ייבוש סופי: 24 שעות',dil:'מברשת/רולר: עד 10% מדלל המרטון',t:'יסוד לכל סוגי המתכת'},
+ ysSuper:{n:'יסוד סופר עמיד',s:'יסוד-סופר-עמיד',u:'m2L',c:[6.7,13.4],pk:[0.5,5],h:12,dry:'למגע: 30 דקות · לעליון: 12 שעות · ייבוש סופי: 16 שעות',dil:'מברשת/רולר: מדלל 18 עד 10%',t:'יסוד אלקידי לסביבה תעשייתית וימית'},
+ rustconv:{n:'ממיר חלודה',s:'ממיר-חלודה',u:'m2L',c:[10,10],pk:[0.75],h:3,dry:'למגע: שעה · ייבוש קשה: 3 שעות',dil:'מברשת/רולר: עד 5% מים',t:'הופך חלודה לתשתית לצביעה'},
+ polMat:{n:'פוליאור מט ע"ב מים',s:'פוליאור-מט-עב-מים',u:'m2L',c:[10,10],pk:[0.75,4.5],h:4,dry:'למגע: שעה · בין שכבות: 4 שעות · ייבוש קשה: 24 שעות',dil:'מוכן לשימוש, עד 15% · בהתזה עד 30%',t:'אטום לעץ ומתכת, מתאים לחדרי ילדים'},
+ polSilk:{n:'פוליאור משי ע"ב מים',s:'פוליאור-משי-עב-מים',u:'m2L',c:[10,10],pk:[0.75,2.25,4.5],h:4,dry:'למגע: שעה · בין שכבות: 4 שעות · ייבוש קשה: 24 שעות',dil:'מוכן לשימוש, עד 15% · בהתזה עד 30%',t:'אטום לעץ ומתכת, גימור משי'},
+ polSolv:{n:'פוליאור מט-משי ע"ב ממס',s:'פוליאור-מט-משי-עב-ממס',u:'m2L',c:[10,10],pk:[0.25,0.75,2.25,2.5,4.5],h:8,dry:'למגע: 2-3 שעות · בין שכבות: 8 שעות · ייבוש קשה: 24 שעות',dil:'מברשת/רולר: טרפנטין מינרלי עד 5%',t:'אטום לעץ ומתכת, מט-משי'},
+ varW:{n:'ורנית ע"ב מים',s:'ורנית-עב-מים',u:'m2L',c:[15,18],pk:[0.75,2.5,4.5,18],h:2.5,dry:'למגע: שעה · בין שכבות: 2-3 שעות · ייבוש קשה: 24 שעות',dil:'25% מים בשכבה הראשונה בלבד',t:'לכה שקופה או מגוונת לעץ'},
+ varS:{n:'ורנית',s:'ורנית',u:'m2L',c:[15,15],pk:[0.25,0.75,2.5,4.5,18],h:24,dry:'למגע: 4 שעות · בין שכבות: 24 שעות',t:'לכה לעץ, מבליטה את הטקסטורה'},
+ ysWood:{n:'יסוד סינטטי לעץ',s:'יסוד-סינטטי-לעץ',u:'m2L',c:[9,10],pk:[0.75,2.5,4.5],h:24,dry:'למגע: שעתיים · לשכבה עליונה: 24 שעות',dil:'טרפנטין מינרלי עד 5%',t:'יסוד לבן לכל סוגי העץ'},
+ deckW:{n:'נטורל דק ע"ב מים',s:'נטורל-דק-עב-מים',u:'m2L',c:[10,15],pk:[1,5],h:0.5,dry:'למגע: 1-4 שעות · בין שכבות: 20-30 דקות · ייבוש קשה: 24 שעות',t:'שמן לחידוש והגנה על דקים'},
+ deckS:{n:'שמן דקים ע"ב ממס TWC3',s:'שמן-דקים-עב-ממס-twc3',u:'m2L',c:[10,15],pk:[1,5,15],h:0.5,dry:'למגע: 1-4 שעות · בין שכבות: 20-30 דקות · ייבוש קשה: 48 שעות',t:'שמן לדקים על בסיס ממס'},
+ polygag:{n:'פוליגג משוריין',s:'פוליגג-משוריין',u:'kgm2',c:[2.5,2.5],pk:[5,20],h:24,dry:'כ-24 שעות',dil:'שכבה ראשונה בלבד: 30% מים',t:'ציפוי אקרילי משוריין, איטום והלבנת גג'},
+ pu780:{n:'PU 780 איטום פוליאוריתני לגגות',s:'pu-780-איטום-פוליאוריתני-לגגות',u:'kgm2',c:[1.5,1.5],pk:[1,6,20],h:18,dry:'יבש לנגיעה: 2 שעות · יבש לדריכה: 18 שעות',t:'פוליאוריתן טהור, חזק וגמיש'},
+ pu777:{n:'פוליאוריתן היברידי 777',s:'פוליאוריתן-היברידי-לגגות-777-tamseal',u:'kgm2',c:[1.5,2],pk:[],h:18,dry:'יבש בנגיעה: שעתיים · לדריכה: כ-18 שעות',dil:'שכבת יסוד: 20% מים',t:'על בסיס מים, מחזיר קרינת שמש'},
+ pu765:{n:'TAMSEAL PU765 איטום שקוף',s:'tamseal-pu765-איטום-שקוף-למשטחים-מרוצפים',u:'kgm2',c:[0.8,1.2],pk:[],h:12,dry:'לפי הדף הטכני',t:'שקוף למשטחים מרוצפים, 2-3 שכבות'},
+ seal750:{n:'סילר 750',s:'סילר-750',u:'Lm2',c:[0.2,0.4],pk:[1,4,18],h:4,sys:1,dry:'לפי ספיגות המשטח',t:'שקוף-מט לאבן, בטון וטיח'},
+ seal755:{n:'סילר 755',s:'סילר-755',u:'Lm2',c:[0.15,0.2],pk:[1,4,18],h:4,dry:'לפי ספיגות המשטח',t:'ננו, דוחה מים ולחות'}
+};
+var ROLES={
+ topInt:{l:'גמר',ids:['sc2000','scmat','scsilk','sceco','acrinol','ww','plastikir','magic','multi']},
+ topCeil:{l:'גמר',ids:['scmat','polysid','sid','sc2000','sceco','magic','multi']},
+ deco:{l:'גמר דקורטיבי',ids:['txBeton','txSuede','txLinen','txJeans','txSilk','txGlit']},
+ primeInt:{l:'יסוד',ids:['bondrol','bondrolx','tamfil','yad','primerW']},
+ skim:{l:'החלקה',ids:['magicbond']},
+ treat:{l:'טיפול',ids:['fungi']},
+ topExt:{l:'גמר',ids:['md','md45','puExt','sc2000','scmat']},
+ primeExt:{l:'יסוד',ids:['kosher','primerW','ysShl']},
+ elastic:{l:'ציפוי גמיש',ids:['rg20','rg10','rg90']},
+ shlicht:{l:'גמר שליכט',ids:['tm40','tm50','tm70','tr30','tr50','tr90']},
+ arava:{l:'גמר',ids:['arava']},
+ reinf:{l:'חיזוק',ids:['tflex']},
+ metalTop:{l:'גמר',ids:['hamSm','hamHm','hamGr','hamMt','one','galva']},
+ metalPrep:{l:'הכנה',ids:['rustconv','antirust','ysSolv','ysWater','ysSuper']},
+ woodPrime:{l:'יסוד',ids:['ysWater','ysWood','ysSolv']},
+ woodTop:{l:'גמר',ids:['polMat','polSilk','polSolv']},
+ woodClear:{l:'גמר שקוף',ids:['varW','varS']},
+ deck:{l:'גמר',ids:['deckW','deckS']},
+ roof:{l:'איטום',ids:['polygag','pu780','pu777']},
+ tiles:{l:'איטום',ids:['pu765']},
+ seal:{l:'איטום',ids:['seal750','seal755']}
+};
+var ICONS={
+ wall:'<path d="M4 4h16v16H4z"/><path d="M4 9h16M4 15h16M10 4v5M15 9v6M9 15v5"/>',
+ ceil:'<path d="M3 6h18M5 6l2 14h10l2-14"/><path d="M12 6v4"/>',
+ ext:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+ metal:'<path d="M4 20V8M9 20V8M14 20V8M19 20V8M2 8h20M2 14h20"/>',
+ wood:'<path d="M6 3h12v18H6z"/><path d="M15 12h1"/>',
+ deck:'<path d="M3 8h18M3 12h18M3 16h18"/><path d="M7 8v8M14 12v4M11 8v4"/>',
+ roof:'<path d="M2 12l10-8 10 8"/><path d="M5 10v9h14v-9"/><path d="M9 15c1.5-1 4.5-1 6 0"/>'
+};
+// Surface types → conditions → system steps [role, product, coats]
+var TYPES={
+ wallInt:{l:'קירות פנים',ic:'wall',geo:'room',paint:1,conds:[
+   {k:'good',l:'צבוע, במצב טוב',st:[['topInt','sc2000',2]]},
+   {k:'swap',l:'צבוע, החלפת גוון משמעותית',st:[['topInt','sc2000',3]],note:'במעבר בין גוון כהה לבהיר (או להפך) מומלצת שכבה שלישית לכיסוי אחיד.'},
+   {k:'new',l:'טיח חדש (בנייה חדשה)',st:[['primeInt','tamfil',1],['topInt','sc2000',2]]},
+   {k:'lime',l:'סיד ישן, שפכטל או אחרי תיקונים',st:[['primeInt','bondrol',1],['topInt','sc2000',2]]},
+   {k:'skim',l:'דורש החלקה מלאה בשפכטל',st:[['skim','magicbond',1],['primeInt','bondrol',1],['topInt','sc2000',2]]},
+   {k:'gyps',l:'לוחות גבס חדשים',st:[['primeInt','primerW',1],['topInt','sc2000',2]]},
+   {k:'mold',l:'כתמי עובש / חדר רטוב',st:[['treat','fungi',1],['topInt','acrinol',2]],note:'באזורים רטובים מומלץ סופרקריל אקרינול. מטפלים במקור הרטיבות לפני הצביעה.'},
+   {k:'deco',l:'גמר דקורטיבי (TEXTURE)',st:[['primeInt','bondrol',1],['deco','txBeton',1]]}
+ ]},
+ ceil:{l:'תקרה',ic:'ceil',geo:'floor',paint:1,conds:[
+   {k:'good',l:'צבועה, במצב טוב',st:[['topCeil','scmat',2]]},
+   {k:'lime',l:'מסוידת (סיד ישן)',st:[['primeInt','bondrol',1],['topCeil','scmat',2]]},
+   {k:'new',l:'טיח חדש',st:[['primeInt','yad',1],['topCeil','polysid',2]]},
+   {k:'mold',l:'כתמי עובש (חדר רחצה)',st:[['treat','fungi',1],['topCeil','scmat',2]]}
+ ]},
+ wallExt:{l:'קירות חוץ',ic:'ext',geo:'ext',paint:1,conds:[
+   {k:'painted',l:'צבוע בצבע אקרילי',st:[['primeExt','kosher',1],['topExt','md',2]]},
+   {k:'new',l:'טיח או בטון חדש',st:[['primeExt','primerW',1],['topExt','md',2]]},
+   {k:'crack',l:'סדקים שערתיים עד 2 מ"מ',st:[['primeExt','kosher',1],['elastic','rg20',1]],note:'בסדקים פעילים מומלץ לחזק תחילה ב-T-FLEX 460 עם רשת אינטרגלס.'},
+   {k:'shl',l:'גמר שליכט צבעוני',st:[['primeExt','ysShl',1],['shlicht','tm40',1]]},
+   {k:'arava',l:'גמר טיח ערבה (מראה בטון)',st:[['primeExt','primerW',1],['arava','arava',1]]}
+ ]},
+ metal:{l:'מתכת: מעקות, סורגים, שערים',ic:'metal',geo:'m2',conds:[
+   {k:'ok',l:'מתכת חדשה או צבועה במצב טוב',st:[['metalTop','hamSm',2]]},
+   {k:'rust',l:'חלודה',st:[['metalPrep','rustconv',1],['metalTop','hamSm',2]],note:'המרטון מתאים גם ישירות על חלודה יציבה. ממיר החלודה מיועד לפלדה מוחלדת בלבד.'},
+   {k:'galv',l:'מגולוונת',st:[['metalTop','galva',2]]},
+   {k:'cls',l:'מערכת יסוד ועליון סינתטי',st:[['metalPrep','antirust',1],['metalTop','one',1]]}
+ ]},
+ wood:{l:'עץ: דלתות, רהיטים, פרגולות',ic:'wood',geo:'m2',conds:[
+   {k:'paint',l:'צביעה אטומה',st:[['woodPrime','ysWater',1],['woodTop','polMat',2]]},
+   {k:'clear',l:'לכה שקופה או מגוונת',st:[['woodClear','varW',2]]}
+ ]},
+ deck:{l:'דק עץ',ic:'deck',geo:'floor',conds:[
+   {k:'renew',l:'חידוש דק קיים',st:[['deck','deckW',2]]}
+ ]},
+ roof:{l:'גג או מרפסת: איטום',ic:'roof',geo:'floor',conds:[
+   {k:'acr',l:'גג בטון: ציפוי אקרילי לבן',st:[['roof','polygag',1]]},
+   {k:'pu',l:'גג: איטום פוליאוריתני',st:[['roof','pu780',1]]},
+   {k:'tiles',l:'מרפסת מרוצפת: איטום שקוף',st:[['tiles','pu765',1]]},
+   {k:'stone',l:'אבן, בטון חשוף או טיח: סילר',st:[['seal','seal750',1]]}
+ ]}
+};
+
+function stepQty(s,st,A,cfg){var p=P[st.p];var r={unit:'',q:0,cov:null,txt:''};
+  var lo=p.c?p.c[0]:0,hi=p.c?p.c[1]:0;var deep=s.shade&&baseOf(s.shade)==='deep'&&p.tint;
+  if(deep&&p.deep){lo=p.deep[0];hi=p.deep[1]}
+  if(p.u==='m2L'){var cov=cfg.cons?lo:(lo+hi)/2;if(s.rough&&p.rough)cov=cov/2;var coats=p.sys?1:st.coats;r.unit='ליטר';r.q=A*coats/cov*(1+cfg.waste);r.cov=cov;r.txt=fmt(cov)+' מ"ר לליטר'+(p.sys?' (למערכת)':' לשכבה')}
+  else if(p.u==='kgm2'){var k=cfg.cons?hi:(lo+hi)/2;r.unit='ק"ג';r.q=A*k*(1+cfg.waste);r.txt=fmt(k)+' ק"ג למ"ר (למערכת)'}
+  else if(p.u==='kgmm'){var k2=lo*(+s.thick||1);r.unit='ק"ג';r.q=A*k2*(1+cfg.waste);r.txt=fmt(lo)+' ק"ג למ"ר לכל מ"מ'}
+  else if(p.u==='Lm2'){var k3=cfg.cons?hi:(lo+hi)/2;r.unit='ליטר';r.q=A*k3*(p.sys?1:st.coats)*(1+cfg.waste);r.txt=fmt(k3*1000)+' מ"ל למ"ר'+(p.sys?'':' לשכבה')}
+  else {r.unit='fix';r.q=1;r.txt=p.dil}
+  r.deepNote=deep&&!p.deep&&p.pastelOnly;
+  return r}
+// Pack optimizer: least leftover, then fewest packs (DP in 0.05 units)
+function packs(q,sizes){if(!sizes||!sizes.length||q<=0)return null;var U=20;var sz=sizes.map(function(x){return Math.round(x*U)});var T=Math.ceil(q*U-1e-6);var M=T+Math.max.apply(null,sz);var best=new Array(M+1).fill(Infinity),from=new Array(M+1).fill(-1);best[0]=0;
+  for(var a=1;a<=M;a++)for(var i=0;i<sz.length;i++){var b=a-sz[i];if(b>=0&&best[b]+1<best[a]){best[a]=best[b]+1;from[a]=i}}
+  var pen=0.35*Math.min(q,Math.max.apply(null,sizes))*U,pick=-1,bs=Infinity;for(var t1=T;t1<=M;t1++)if(best[t1]<Infinity){var sc=t1+pen*best[t1];if(sc<bs-1e-9){bs=sc;pick=t1}}if(pick<0)return null;
+  for(var t=pick;t<=pick;t++){var cnt={},x=t;while(x>0){var i2=from[x];cnt[sizes[i2]]=(cnt[sizes[i2]]||0)+1;x-=sz[i2]}
+    var parts=Object.keys(cnt).map(Number).sort(function(a,b){return b-a}).map(function(k){return (+k.toFixed(2))+'{U}'+(cnt[k]>1?' ('+cnt[k]+' יח\')':'')});return {txt:parts.join(' + '),n:best[t],tot:t/U,left:t/U-q}}
+  return null}
+function fmt(x){var r=Math.round(x*10)/10;return (r%1===0?r.toFixed(0):r.toFixed(1))}
+function shadeObj(c){for(var i=0;i<SH.length;i++)if(SH[i].c===c)return SH[i];return null}
+function hours(h){if(h>=24){var d=h/24;return (d%1===0?d:fmt(d))+(d===1?' יום':' ימים')}if(h<1)return Math.round(h*60)+' דק\'';return fmt(h)+(h===1?' שעה':' שעות')}
+
+var chat=$('chat'),inp=$('inp'),busy=false,AI=null,turns=[];
+var esc=function(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+function now(){var d=new Date();return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+var TICK='<svg viewBox="0 0 18 11"><path d="M1 6l3 3 6-7M7 9l1 1 7-8"/></svg>';
+function scroll(){chat.scrollTop=chat.scrollHeight}
+function fmtTxt(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<b>$1</b>')}
+function bubble(t,who){var m=document.createElement('div');m.className='msg '+who;m.innerHTML=fmtTxt(t)+'<time>'+now()+(who==='out'?TICK:'')+'</time>';chat.appendChild(m);scroll();return m}
+function card(id){var p=P[id];if(!p)return;var c=document.createElement('div');c.className='card';
+  var cov=p.u==='m2L'?fmt(p.c[0])+(p.c[1]!==p.c[0]?'-'+fmt(p.c[1]):'')+' מ"ר לליטר'+(p.sys?'':' לשכבה'):p.u==='kgm2'?fmt(p.c[0])+(p.c[1]!==p.c[0]?'-'+fmt(p.c[1]):'')+' ק"ג למ"ר':p.u==='Lm2'?Math.round(p.c[0]*1000)+'-'+Math.round(p.c[1]*1000)+' מ"ל למ"ר':p.u==='kgmm'?fmt(p.c[0])+' ק"ג למ"ר לכל מ"מ':(p.dil||'');
+  var pk=p.pk&&p.pk.length?p.pk.map(function(x){return +x.toFixed(2)}).join(' / ')+(p.u==='kgm2'||p.u==='kgmm'?' ק"ג':' ליטר'):(p.pkTxt||'לפי המשווק');
+  c.innerHTML='<div class="hd"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7z"/><path d="M8 8a4 4 0 0 1 8 0"/></svg></span><div><b>'+esc(p.n)+'</b><small>'+esc(p.t)+'</small></div></div><dl><dt>כיסוי</dt><dd>'+esc(cov)+'</dd><dt>אריזות</dt><dd>'+esc(pk)+'</dd><dt>ייבוש</dt><dd>'+esc(p.dry)+'</dd></dl><a href="https://tambour.co.il/product/'+encodeURIComponent(p.s)+'/" target="_blank" rel="noopener">לדף המוצר באתר</a>';
+  chat.appendChild(c);scroll()}
+function quick(list){if(!list||!list.length)return;var q=document.createElement('div');q.className='qr';list.slice(0,4).forEach(function(t){var b=document.createElement('button');b.type='button';b.textContent=t;b.onclick=function(){q.querySelectorAll('button').forEach(function(x){x.disabled=true});ask(t)};q.appendChild(b)});chat.appendChild(q);scroll()}
+function typing(on){var t=$('typing');if(on&&!t){t=document.createElement('div');t.className='typing';t.id='typing';t.setAttribute('aria-label','היועץ מקליד');t.innerHTML='<i></i><i></i><i></i>';chat.appendChild(t);scroll()}if(!on&&t)t.remove();$('status').textContent=on?'מקליד/ה…':'מקוון'}
+function wait(ms){return new Promise(function(r){setTimeout(r,matchMedia('(prefers-reduced-motion: reduce)').matches?0:ms)})}
+// ---------- Quantity tool (same engine as the calculator) ----------
+function calcQty(pid,area,coats){var p=P[pid];if(!p)throw new Error('unknown product '+pid);area=+area;if(!(area>0))throw new Error('area must be > 0');coats=Math.max(1,Math.min(4,+coats||2));
+  var r=stepQty({shade:null},{p:pid,coats:coats},area,{waste:0.1,cons:true});var pk=r.unit==='fix'?null:packs(r.q,p.pk);
+  return {product:p.n,area_m2:area,coats:p.sys||p.u!=='m2L'?null:coats,needed:+r.q.toFixed(1),unit:r.unit,coverage:r.txt,buy:pk?pk.txt.split('{U}').join(r.unit==='ליטר'?' ליטר':' ק"ג'):'לפי המשווק',includes:'10% פחת, חישוב שמרני'}}
+function roomArea(L,W,H,doors,wins){return Math.max(0,2*(L+W)*H-(doors||0)*1.89-(wins||0)*1.44)}
+// ---------- Scripted answers (work without AI) ----------
+var START=['מה מתאים לחדר רחצה?','כמה צבע לחדר 3.5 על 3.2?','יש לי מעקה חלוד, מה עושים?','כמה לחכות בין שכבות?'];
+function scripted(q){var t=q.replace(/[?!.,]/g,' ');
+  if(/רחצה|אמבטיה|רטוב|עובש|מקלחת/.test(t))return {text:'לחדר רחצה הייתי ממליץ על **סופרקריל אקרינול**: צבע אקרילי בגימור מט שמתאים במיוחד לחדרים רטובים, ומגיע בכל גווני המניפה.\n\nאם יש כתמי עובש, קודם מחטאים עם **תמיסה פונגיציק** (100 מ"ל ל-5 ליטר מים), מחכים 30 דקות, ורק אז צובעים. וחשוב לטפל קודם במקור הרטיבות.',cards:['acrinol','fungi'],quick:['כמה אקרינול צריך לחדר קטן?','איך מזמינים דוגמת צבע?']};
+  var m=t.match(/(\d+(?:\.\d+)?)\s*(?:על|x|X|×|\*)\s*(\d+(?:\.\d+)?)/);
+  if(m||/כמה (צבע|ליטר|אקרינול)|כמות/.test(t)){var L=m?+m[1]:2.4,W=m?+m[2]:1.8,H=2.7;var pid=/אקרינול|רחצה|קטן/.test(t)&&!m?'acrinol':'sc2000';var A=roomArea(L,W,H,1,1);var r=calcQty(pid,A,2);
+    return {text:'חישבתי לחדר של '+fmt(L)+' על '+fmt(W)+' מ\', בגובה 2.7 מ\', עם דלת וחלון: כ-**'+fmt(A)+' מ"ר** קירות.\n\nב-'+r.product+', בשתי שכבות, צריך כ-**'+fmt(r.needed)+' ליטר**.\nהכי משתלם לקנות: **'+r.buy+'**.\n\nהחישוב כולל 10% פחת. אם צובעים גם תקרה, או מחליפים לגוון שונה מאוד, כתבו לי ואעדכן.',cards:[pid],quick:['ואם צובעים גם תקרה?','איזה צבע מתאים לסלון?']}}
+  if(/תקרה/.test(t)){var A2=3.5*3.2,r2=calcQty('scmat',A2,2);return {text:'לתקרה של כ-'+fmt(A2)+' מ"ר הייתי בוחר **סופרקריל מט+**, שמסתיר טוב ובגימור מט אחיד.\nבשתי שכבות צריך כ-**'+fmt(r2.needed)+' ליטר**, כלומר **'+r2.buy+'**.',cards:['scmat'],quick:['כמה לחכות בין שכבות?']}}
+  if(/מעקה|חלוד|חלודה|סורג|שער|מתכת|ברזל/.test(t))return {text:'אפשר לצבוע ישירות עם **המרטון חלק משי**: הוא מתאים גם על חלודה יציבה ועל מתכת מגולוונת, בלי צבע יסוד.\n\nאם יש חלודה מתקלפת, קודם מנקים במברשת פלדה. בפלדה מוחלדת אפשר להתחיל ב**ממיר חלודה**, שהופך את החלודה לתשתית לצביעה, ואחרי 3 שעות לצבוע.',cards:['hamSm','rustconv'],quick:['כמה המרטון למעקה של 6 מ"ר?','לדבר עם נציג']};
+  if(/המרטון/.test(t)){var mm=t.match(/(\d+(?:\.\d+)?)\s*מ/);var a=mm?+mm[1]:6;var r3=calcQty('hamSm',a,2);return {text:'ל-'+fmt(a)+' מ"ר בשתי שכבות צריך כ-**'+fmt(r3.needed)+' ליטר** המרטון.\nהכי משתלם: **'+r3.buy+'**.\n\nבמעקה עם הרבה מוטות כדאי למדוד את השטח בפועל, כי הוא יכול להיות גדול מאורך כפול גובה.',quick:['כמה לחכות בין שכבות?']}}
+  if(/לחכות|ייבוש|יבש|בין שכבות/.test(t))return {text:'זה תלוי במוצר. כמה דוגמאות מהדפים הטכניים:\n\n• **סופרקריל 2000**: שעתיים בין שכבות, ייבוש סופי 7 ימים\n• **המרטון**: 1-2 שעות בין שכבות, ייבוש קשה 24 שעות\n• **רב-גמיש**: 24 שעות בין שכבות\n\nבאיזה מוצר אתם משתמשים?',quick:['סופרקריל 2000','איך מזמינים דוגמת צבע?']};
+  if(/סופרקריל 2000|2000/.test(t))return {text:'**סופרקריל 2000**: ייבוש למגע שעה, שעתיים בין שכבות, וייבוש סופי 7 ימים.\nבשכבה הראשונה מדללים 15%-20% מים. בהתזה עד 30%.',cards:['sc2000']};
+  if(/סלון|חדר שינה|קירות|פנים/.test(t))return {text:'לקירות פנים הייתי בוחר בין שניים:\n\n• **סופרקריל 2000**: ברק מעודן, רחיץ ועמיד בקרצוף כבד. מתאים לבית עם ילדים.\n• **סופרקריל מט+**: מט חלק ואחיד, נראה רך יותר.\n\nשניהם מגיעים בכל גווני המניפה.',cards:['sc2000','scmat'],quick:['כמה צבע לחדר 3.5 על 3.2?','איך מזמינים דוגמת צבע?']};
+  if(/מטבח/.test(t))return {text:'במטבח כדאי צבע שעומד בניקוי: **סופרקריל 2000** רחיץ ועמיד בקרצוף כבד. ליד הכיור או במקום עם הרבה אדים אפשר גם **סופרקריל אקרינול**, שמתאים לחדרים רטובים.',cards:['sc2000'],quick:['כמה צבע לחדר 3.5 על 3.2?']};
+  if(/גג|איטום|דולף|נזילה/.test(t))return {text:'לגג בטון, אחד הפתרונות הנפוצים הוא **פוליגג משוריין**: ציפוי אקרילי שאוטם ומלבין את הגג, בצריכה של כ-2.5 ק"ג למ"ר.\n\nבאיטום כדאי שאיש מקצוע יבדוק קודם את מצב הגג. רוצים שאעביר לנציג?',cards:['polygag'],quick:['לדבר עם נציג']};
+  if(/דוגמה|דוגמת|דוגמאות/.test(t))return {text:'אפשר להזמין דוגמאות צבע עד הבית דרך מניפת הגוונים באתר: בוחרים גוון, מוסיפים לרשימה ומזמינים.\n\nטיפ: מורחים את הדוגמה על הקיר עצמו ובודקים אותה בבוקר ובערב, כי התאורה משנה את הגוון.',quick:['איזה צבע מתאים לסלון?']};
+  if(/נציג|אדם|אנושי|שירות/.test(t))return {text:'אין בעיה. העברתי את השיחה לנציג שירות הלקוחות של טמבור, והוא יחזור אליכם כאן בהקדם בשעות הפעילות.\n\n(בהדגמה הזו אין נציג אמיתי מחובר.)'};
+  return {text:'שאלה טובה. בהדגמה הזו אני עונה על כמה נושאים מוכנים מראש. בגרסה המלאה היועץ עונה על כל שאלה מתוך הקטלוג של טמבור, ומעביר לנציג כשצריך.\n\nאפשר לנסות אחת מאלה:',quick:START}}
+// ---------- AI answers (when the viewer can run Claude) ----------
+function catalog(){return Object.keys(P).map(function(k){var p=P[k];return k+' | '+p.n+' | '+p.t+' | '+(p.u==='m2L'?p.c.join('-')+' m2/L'+(p.sys?' system':' per coat'):p.u==='kgm2'?p.c.join('-')+' kg/m2':p.u==='Lm2'?p.c.join('-')+' L/m2':p.u==='kgmm'?p.c[0]+' kg/m2/mm':'fixed')+' | packs '+(p.pk&&p.pk.length?p.pk.join('/'):p.pkTxt||'n/a')+' | dry: '+p.dry+(p.dil?' | thin: '+p.dil:'')}).join('\n')}
+var RULES='You are "יועץ טמבור", the WhatsApp advisor of Tambour (Israeli paint and building-materials company). Reply in natural, warm, concise Hebrew, like an experienced painter texting a customer: short paragraphs, at most ~90 words, bold product names with **name**. Use ONLY the product catalog below for product facts (names, coverage, packs, drying, thinning); never invent products, prices, store locations or numbers. For quantities ALWAYS call the calc_quantity tool (it adds 10% waste and picks packs); for room walls area = 2*(L+W)*H minus 1.89 per door and 1.44 per window, assume height 2.7m, 1 door and 1 window if not given and say so. If a question is outside the catalog (prices, delivery, warranty, structural problems) say you will pass it to a Tambour representative. Never claim to be human.\n\nFinal reply format: ONLY a JSON object {"text": string (Hebrew, may contain **bold** and line breaks), "products": [up to 2 catalog ids to show as cards], "quick": [up to 3 short Hebrew follow-up questions the customer might tap]}.\n\nCATALOG (id | name | tagline | coverage | packs | dry | thin):\n';
+var TOOLS=[{name:'calc_quantity',description:'Compute how much of a Tambour product is needed for an area, using the product\'s real coverage with 10% waste, and the cheapest pack combination. Returns {needed, unit, buy, coverage}.',inputSchema:{type:'object',properties:{product_id:{type:'string',description:'catalog id'},area_m2:{type:'number'},coats:{type:'number',description:'number of coats, usually 2'}},required:['product_id','area_m2']},execute:function(i){return calcQty(String(i.product_id),Number(i.area_m2),Number(i.coats||2))}}];
+var aiOk=true;
+async function aiAnswer(q){var lim=await AI.limits().catch(function(){return null});var useTools=!!(lim&&lim.tools);
+  var hist=turns.slice(-6);var input=[{role:'user',content:RULES+catalog()+'\n\nConversation follows.'}].concat(hist).concat([{role:'user',content:q}]);
+  var opts={modelTier:'quick'};if(useTools)opts.tools=TOOLS;else opts.cache=false;
+  var r=await AI.json(input,opts);if(!r||typeof r.text!=='string')throw {code:'invalid_json'};
+  return {text:r.text,cards:(Array.isArray(r.products)?r.products:[]).filter(function(x){return P[x]}).slice(0,2),quick:(Array.isArray(r.quick)?r.quick:[]).map(String).slice(0,3)}}
+async function ask(q){q=String(q).trim();if(!q||busy)return;busy=true;$('send').disabled=true;bubble(q,'out');inp.value='';
+  await wait(350);typing(true);var ans=null;
+  if(AI&&aiOk){try{ans=await aiAnswer(q)}catch(e){var c=e&&e.code;if(c==='not_granted'||c==='sampling_disabled'||c==='not_declared'||c==='capability_disabled'||c==='capability_removed'||c==='rate_limited'||c==='tools_unavailable'){aiOk=false;setMode(false)}ans=null}}
+  if(!ans){await wait(700);ans=scripted(q)}
+  typing(false);bubble(ans.text,'in');(ans.cards||[]).forEach(card);quick(ans.quick);
+  turns.push({role:'user',content:q},{role:'assistant',content:ans.text});
+  busy=false;$('send').disabled=false}
+function setMode(on){$('mode').classList.toggle('on',!!on);$('modeTxt').textContent=on?'מחובר ל-Claude: עונה על כל שאלה מהקטלוג':'מצב הדגמה: תשובות מוכנות'}
+$('form').addEventListener('submit',function(e){e.preventDefault();ask(inp.value)});
+// start
+var d=document.createElement('div');d.className='day';d.textContent='היום';chat.appendChild(d);
+bubble('שלום! אני היועץ של טמבור\nאפשר לשאול אותי איזה מוצר מתאים, כמה צבע לקנות, ואיך מיישמים. במה אפשר לעזור?','in');
+quick(START);
+if(window.claude&&window.claude.use){window.claude.use('sample').then(function(s){if(s){AI=s;setMode(true)}}).catch(function(){})}
+})();
+</script>
+
+</body></html>
